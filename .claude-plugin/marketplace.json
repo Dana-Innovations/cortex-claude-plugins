@@ -1,0 +1,15 @@
+{
+  "name": "cortex-plugins",
+  "owner": {
+    "name": "Dana Innovations",
+    "email": "dev@danainnovations.com"
+  },
+  "plugins": [
+    {
+      "name": "cortex",
+      "source": "./cowork",
+      "version": "1.0.0",
+      "description": "Build and deploy real web apps through conversation. Guides non-technical users from idea to live project with GitHub, Vercel, and Supabase."
+    }
+  ]
+}
