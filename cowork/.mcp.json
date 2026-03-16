@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "cortex": {
+      "type": "http",
+      "url": "https://cortex-bice.vercel.app/mcp/cortex",
+      "headers": {
+        "Authorization": "Bearer ${CORTEX_API_KEY}",
+        "x-cortex-client": "cowork"
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "cortex",
+  "version": "1.0.0",
+  "description": "Build and deploy real web apps through conversation. Guides non-technical users from idea to live project with GitHub, Vercel, and Supabase — no coding knowledge required.",
+  "author": {
+    "name": "Dana Innovations",
+    "url": "https://github.com/Dana-Innovations"
+  },
+  "repository": "https://github.com/Dana-Innovations/cortex-claude-plugins",
+  "license": "MIT",
+  "keywords": ["vibecoding", "deployment", "supabase", "vercel", "github", "no-code", "app-builder"]
+}
