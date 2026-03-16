@@ -1,0 +1,23 @@
+{
+  "name": "cortex",
+  "version": "1.0.0",
+  "description": "Zero-config backend, hosting, and version control for non-technical builders. Connects Supabase, Vercel, and GitHub through natural conversation.",
+  "author": {
+    "name": "Dana Innovations",
+    "url": "https://github.com/danainnovations"
+  },
+  "repository": "https://github.com/danainnovations/cortex",
+  "license": "MIT",
+  "keywords": ["vibecoding", "supabase", "vercel", "github", "no-code", "backend", "deployment"],
+  "mcpServers": {
+    "cortex": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@danainnovations/cortex-mcp@latest"],
+      "env": {
+        "CORTEX_CONFIG_PATH": "${HOME}/.cortex/config.json"
+      }
+    }
+  },
+  "hooks": "./hooks/hooks.json"
+}

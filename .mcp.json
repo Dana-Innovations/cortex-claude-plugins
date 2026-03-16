@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "cortex": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@danainnovations/cortex-mcp@latest"],
+      "env": {
+        "CORTEX_CONFIG_PATH": "${HOME}/.cortex/config.json"
+      }
+    }
+  }
+}
