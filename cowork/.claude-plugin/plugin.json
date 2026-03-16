@@ -1,6 +1,6 @@
 {
   "name": "cortex",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Build and deploy real web apps through conversation. Guides non-technical users from idea to live project with GitHub, Vercel, and Supabase — no coding knowledge required.",
   "author": {
     "name": "Dana Innovations",

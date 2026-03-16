@@ -1,61 +1,124 @@
 # Set Up Cortex
 
-Help the user run the Cortex setup wizard on their computer. This only needs to happen once.
+Connect the user's Cortex account by authenticating directly through the Cortex API. No terminal, no npx, no Node.js required.
 
 ## How it works
 
-The setup wizard runs on the user's own computer, not inside this chat. Your job is to give them the simplest possible instruction to get it done.
+This setup uses HTTP calls to the Cortex backend and presents auth URLs for the user to click. Everything happens through conversation.
 
-### Step 1: Give them the command
+### Step 1: Check if already authenticated
 
-Say:
+Run:
+```bash
+test -f ~/.cortex-mcp/credentials.json && cat ~/.cortex-mcp/credentials.json 2>/dev/null
+```
 
-> "To connect Cortex, open your terminal and paste this command:"
+If the file exists and has an `apiKey`, say:
+> "You're already connected! Run **/cortex:vibecode** to start building a project."
+
+Then stop.
+
+### Step 2: Initiate SSO authentication
+
+Run:
+```bash
+curl -s -X POST https://cortex-bice.vercel.app/api/v1/auth/employee/initiate \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+This returns JSON with `session_id` and `auth_url`. Extract both.
+
+Present the auth URL to the user as a clickable link:
+
+> "Click this link to sign in:"
 >
-> ```
-> npx @danainnovations/cortex-mcp@latest setup
-> ```
+> **[Sign in to Cortex](the_auth_url_here)**
 >
-> "A setup wizard will open in your browser. Follow the steps there — it takes about a minute."
+> "Once you've signed in, come back here and tell me you're done."
 
-That's it. Don't explain what GitHub, Vercel, or Supabase are. Don't explain what npx is. Don't explain what Node.js is. Just give them the command.
+### Step 3: Poll for completion
 
-### Step 2: If they don't know how to open a terminal
+After the user says they've signed in (or periodically), poll:
 
-- **Mac**: "Press Cmd + Space, type **Terminal**, hit Enter. Then paste the command."
-- **Windows**: "Press the Windows key, type **PowerShell**, hit Enter. Then paste the command."
+```bash
+curl -s https://cortex-bice.vercel.app/api/v1/auth/employee/poll/SESSION_ID_HERE
+```
 
-### Step 3: If it doesn't work
+Check the `status` field in the response:
+- `"pending"` — they haven't completed sign-in yet. Wait and try again.
+- `"completed"` — success! Extract `api_key`, `employee_name`, and `employee_email` from the response.
+- `"expired"` — session timed out. Go back to Step 2 and start over.
+- `"error"` — show the `error_message` in plain language.
 
-If they report an error, ask them to paste what they see. Common issues:
+When polling returns `"pending"`, wait a few seconds and poll again. Do this automatically — don't make the user tell you to check each time. Poll up to 60 times (about 3 minutes).
 
-**"command not found: npx" or "npx is not recognized"**
-> "You need Node.js installed first. Go to **nodejs.org**, download the installer, run it, then try the command again."
+### Step 4: Save credentials
 
-**Any other error**
-> "Try this instead — paste this into your terminal:"
+Once status is `"completed"`, write the credentials file:
+
+```bash
+mkdir -p ~/.cortex-mcp && chmod 700 ~/.cortex-mcp
+cat > ~/.cortex-mcp/credentials.json << 'CREDENTIALS'
+{
+  "apiKey": "THE_API_KEY_FROM_POLL",
+  "email": "THE_EMAIL_FROM_POLL",
+  "name": "THE_NAME_FROM_POLL",
+  "authenticatedAt": "CURRENT_ISO_TIMESTAMP"
+}
+CREDENTIALS
+chmod 600 ~/.cortex-mcp/credentials.json
+```
+
+Replace the placeholder values with the actual values from the poll response.
+
+### Step 5: Connect services (optional)
+
+After authentication, offer to connect individual services. For each service, use the OAuth connect flow:
+
+```bash
+curl -s -X POST https://cortex-bice.vercel.app/api/v1/oauth/connect/PROVIDER/initiate \
+  -H "x-api-key: THE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+Replace PROVIDER with: `github`, `vercel`, or `supabase`.
+
+This returns `authorization_url`. Present it the same way:
+
+> "Click this link to connect your GitHub account:"
 >
-> ```
-> curl -fsSL https://cortex-bice.vercel.app/install.sh | bash
-> ```
+> **[Connect GitHub](the_authorization_url_here)**
+
+Then poll for completion:
+```bash
+curl -s https://cortex-bice.vercel.app/api/v1/oauth/connect/poll/SESSION_ID \
+  -H "x-api-key: THE_API_KEY"
+```
+
+Same status pattern: `pending`, `completed`, `expired`, `error`.
+
+Ask about each service one at a time:
+> "Want to connect GitHub (code storage)?" → if yes, run the flow
+> "Want to connect Vercel (website hosting)?" → if yes, run the flow
+> "Want to connect Supabase (database)? You can skip this for now." → if yes, run the flow
+
+### Step 6: Done
+
+> "You're all set! Here's what's connected:"
+> - Signed in as: [name] ([email])
+> - GitHub: [connected / skipped]
+> - Vercel: [connected / skipped]
+> - Supabase: [connected / skipped]
 >
-> "This installs everything you need and opens the setup wizard."
-
-For Windows:
-> ```
-> irm https://cortex-bice.vercel.app/install.ps1 | iex
-> ```
-
-### Step 4: Once they're done
-
-When they say the wizard is complete:
-
-> "You're all set! You can now use Cortex tools in this chat. Try **/cortex:vibecode** to start building a project."
+> "Run **/cortex:vibecode** to start building a project."
 
 ## Important Rules
 
-- Do NOT try to run the setup inside this chat. It must run on their computer.
-- Do NOT explain what the three services are. The wizard handles that.
-- Do NOT explain what npm, npx, or Node.js is unless they hit an error.
-- Keep it short. One command, one instruction.
-- If they're confused about opening a terminal, help with that — nothing more.
+- Do NOT tell the user to open a terminal. Everything happens through links they click.
+- Do NOT explain what SSO, OAuth, API keys, or tokens are.
+- Do NOT show raw JSON responses. Parse them and speak in plain English.
+- If a curl command fails with a network error, check if `cortex-bice.vercel.app` is in the egress allowlist. Tell the user: "Your organization needs to allow access to cortex-bice.vercel.app. Ask your IT admin to add it to the allowed domains."
+- If the auth URL fails or expires, just start over. Don't panic.
+- Keep the whole flow conversational — this should feel like a 2-minute signup, not a technical process.
