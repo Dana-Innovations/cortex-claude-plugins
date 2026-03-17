@@ -1,12 +1,12 @@
 {
   "name": "cortex",
-  "version": "1.4.0",
-  "description": "Build and deploy real web apps through conversation. Guides non-technical users from idea to live project with GitHub, Vercel, and Supabase — no coding knowledge required.",
+  "version": "1.5.0",
+  "description": "Plugin for the Sonance skill ecosystem. Extends Claude with organization tools, workflows, and connected services.",
   "author": {
     "name": "Dana Innovations",
     "url": "https://github.com/Dana-Innovations"
   },
   "repository": "https://github.com/Dana-Innovations/cortex-claude-plugins",
   "license": "MIT",
-  "keywords": ["vibecoding", "deployment", "supabase", "vercel", "github", "no-code", "app-builder"]
+  "keywords": ["sonance", "cortex", "enterprise", "workflows", "integrations"]
 }
