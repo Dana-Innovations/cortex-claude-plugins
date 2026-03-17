@@ -1,7 +1,7 @@
 {
   "name": "cortex",
   "version": "1.5.0",
-  "description": "Plugin for the Sonance skill ecosystem. Extends Claude with organization tools, workflows, and connected services.",
+  "description": "Sonance skills for Claude. Guided workflows and smart defaults powered by you, your colleagues, and Cortex.",
   "author": {
     "name": "Dana Innovations",
     "url": "https://github.com/Dana-Innovations"
