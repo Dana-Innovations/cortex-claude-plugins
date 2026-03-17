@@ -8,8 +8,14 @@
     {
       "name": "cortex",
       "source": "./cowork",
-      "version": "1.0.0",
+      "version": "1.4.0",
       "description": "Build and deploy real web apps through conversation. Guides non-technical users from idea to live project with GitHub, Vercel, and Supabase."
+    },
+    {
+      "name": "cortex-code",
+      "source": ".",
+      "version": "1.0.0",
+      "description": "Cortex plugin for Claude Code — setup, vibecoding, and session hooks for developers using the terminal."
     }
   ]
 }
