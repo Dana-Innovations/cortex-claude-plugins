@@ -1,54 +1,53 @@
 # Cortex Tool Routing
 
-IMPORTANT: This workspace has Cortex installed. Cortex provides custom connectors to external services that must be used INSTEAD of Claude's built-in native connectors. This applies every time you interact with any external service.
+You have access to Cortex, a custom MCP that connects to organization services with Sonance credentials. Always use Cortex tools instead of Claude's built-in native connectors.
 
-## Rule: Always Use Cortex Tools First
+## The Rule
 
-When you need to interact with any of the following services, you MUST use the Cortex MCP tools (prefixed with `cortex__`) and NOT Claude's native/built-in connectors:
+When the user asks you to do anything involving the services listed below, you MUST use the Cortex version of the tool. Do not use Claude's built-in connectors for these services, even if they are available.
 
-| Service | Use Cortex tools (correct) | Do NOT use native connector |
-|---|---|---|
-| **Asana** | `cortex__asana__*` | Claude's built-in Asana connector |
-| **Microsoft 365** | `cortex__m365__*` | Claude's built-in M365/Outlook connector |
-| **Slack** | `cortex__slack__*` | Claude's built-in Slack connector |
-| **GitHub** | `cortex__github__*` | Claude's built-in GitHub connector |
-| **Vercel** | `cortex__vercel__*` | Any other Vercel integration |
-| **Supabase** | `cortex__supabase__*` | Any other Supabase integration |
-| **Salesforce** | `cortex__salesforce__*` | Claude's built-in Salesforce connector |
-| **Monday.com** | `cortex__monday__*` | Any other Monday integration |
-| **Power BI** | `cortex__powerbi__*` | Any other Power BI integration |
-| **Best Buy** | `cortex__bestbuy__*` | Any other Best Buy integration |
+Cortex tools are named with the pattern: `mcp__cortex-{service}__tool_name`
+
+## Active Services
+
+### Microsoft 365 (M365)
+**Cortex tools:** `mcp__cortex-m365__*`
+**Covers:** Email, calendar, contacts, OneDrive files, SharePoint, Teams messages, tasks, meetings
+
+When the user says any of the following, use `mcp__cortex-m365__` tools:
+- "Send an email" / "Check my email" / "Reply to..."
+- "What's on my calendar" / "Schedule a meeting"
+- "Find that file" / "Upload to SharePoint"
+- "Send a Teams message" / "Check Teams"
+- "Create a task" / "What are my tasks"
+- Any reference to Outlook, Teams, OneDrive, SharePoint, or Microsoft
+
+Do NOT use any built-in Microsoft/M365/Outlook connector. Only `mcp__cortex-m365__`.
+
+## Future Services (not yet active for most users)
+
+These are configured but not widely used yet. When they become active, use the Cortex versions:
+
+- **Asana:** `mcp__cortex-asana__*` (not Claude's built-in Asana)
+- **Slack:** `mcp__cortex-slack__*` (not Claude's built-in Slack)
+- **GitHub:** `mcp__cortex-github__*` (not Claude's built-in GitHub)
+- **Vercel:** `mcp__cortex-vercel__*`
+- **Supabase:** `mcp__cortex-supabase__*`
+- **Salesforce:** `mcp__cortex-salesforce__*`
+- **Monday.com:** `mcp__cortex-monday__*`
+- **Power BI:** `mcp__cortex-powerbi__*`
+- **Databricks:** `mcp__cortex-databricks__*`
+- **Best Buy:** `mcp__cortex-bestbuy__*`
+- **Mailchimp:** `mcp__cortex-mailchimp__*`
 
 ## Why This Matters
 
-Cortex connectors are configured with the user's organization credentials and OAuth tokens. Using Claude's native connectors instead would:
-- Bypass the organization's authentication
-- Miss usage tracking and cost allocation
-- Skip organization-specific permissions and scopes
-- Potentially use the wrong account or credentials
+Cortex tools use the employee's organization credentials and track usage properly. Claude's built-in connectors use a different authentication path and bypass the organization's setup. Using the wrong connector means things may not work, or may use the wrong account.
 
-## How to Apply This
+## How to Apply
 
-1. **Before calling any external service tool**, check if a Cortex version exists. If it does, use the Cortex version.
-2. **When listing available tools**, look for `cortex__` prefixed tools first.
-3. **If a user asks to do something with Asana, Outlook, Slack, GitHub, etc.**, always route through Cortex — even if they don't say "Cortex" or "via Cortex."
-4. **If a Cortex tool fails**, tell the user and ask if they want to try the native connector as a fallback. Do not silently fall back.
-5. **When the user mentions a service by name** (e.g., "check my Asana tasks", "send an email", "look at my Slack messages"), this means use the Cortex connector for that service.
-
-## Examples
-
-User says: "Check my Asana tasks"
-→ Use `cortex__asana__list_tasks`, NOT Claude's native Asana connector
-
-User says: "Send an email to John"
-→ Use `cortex__m365__send_email`, NOT Claude's native email connector
-
-User says: "What's in my Slack channels?"
-→ Use `cortex__slack__list_channels`, NOT Claude's native Slack connector
-
-User says: "Create a GitHub repo"
-→ Use `cortex__github__create_repository`, NOT Claude's native GitHub connector
-
-## This Skill Is Always Active
-
-These routing rules apply to every interaction in this session, whether or not the user explicitly mentions Cortex. You do not need to ask the user which connector to use — always default to Cortex.
+1. Before calling any tool for a listed service, check if a `mcp__cortex-{service}__` version exists in your available tools.
+2. If it does, use it. Do not use any other connector for that service.
+3. If a Cortex tool fails, tell the user. Do not silently fall back to a native connector.
+4. You do not need to mention "Cortex" to the user. Just use the right tools.
+5. These rules apply to every message, whether or not the user says "Cortex."

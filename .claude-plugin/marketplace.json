@@ -8,7 +8,7 @@
     {
       "name": "cortex",
       "source": "./cowork",
-      "version": "1.5.0",
+      "version": "2.0.0",
       "description": "Sonance skills for Claude. Guided workflows and smart defaults powered by you, your colleagues, and Cortex."
     },
     {
