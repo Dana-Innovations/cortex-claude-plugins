@@ -58,8 +58,8 @@ docs/                ← detailed documentation
 1. Skills are the primary deliverable
 2. Write for non-technical users — plain English, no jargon
 3. Test in both plugin and standalone contexts before shipping
-4. One SKILL.md per skill — if Chat needs a different flow, create a separate skill
-5. Chat users have no terminal, no filesystem, no local access
+4. Chat users have no terminal, no filesystem, no local access
+5. **Three-surface thinking:** every skill must be considered across Code (raw terminal), Cowork (local VM, bridged filesystem), and Chat (cloud sandbox, no local access). Always ask: "are the flows different enough to warrant separate skills, or just conditional logic within one?" Prefer one skill with branching over three copies. See [docs/skill-authoring.md](docs/skill-authoring.md).
 
 ## Documentation Rules
 
